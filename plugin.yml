@@ -1,0 +1,31 @@
+name: expbook
+main: boardinggamer.expbook.expbook
+version: 1.7.1
+description: get exp from books
+commands:
+ expbook:
+  description:
+  usage: <command>
+  aliases: []
+permissions:
+  expbook.*:
+    children:
+      expbook.use: true
+      expbook.create: true
+      expbook.command.*: true
+  expbook.command.*:
+    children:
+      expbook.command.help: true
+      expbook.command.reload: true
+  expbook.create:
+    description: Allows you to create and destroy altars.
+    default: op
+  expbook.use:
+    description: Allows players to use the altars.
+    default: op
+  expbook.command.reload:
+    description: Allows player to use /expbook reload
+    default: op
+  expbook.command.help:
+    description: Allows player to use /expbook help
+    default: op
