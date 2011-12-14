@@ -21,7 +21,8 @@ class PListener extends PlayerListener {
         this.plugin = aThis;
     }
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Player plr = event.getPlayer();
