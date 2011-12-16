@@ -16,12 +16,13 @@ import org.bukkit.util.config.Configuration;
 @SuppressWarnings("deprecation")
 public class expbook extends JavaPlugin {
 
-    public static int altarblock = Integer.SIZE;
+    public static int expblock = Integer.SIZE;
+    public static int bookblock = Integer.SIZE;
     public static int exp = Integer.SIZE;
     public static boolean bookworm;
     public static String booktitle;
     Configuration config;
-    public static Permission permission = null;
+    public Permission permission = null;
 
     private Boolean setupPermissions()
     {
@@ -47,7 +48,8 @@ public class expbook extends JavaPlugin {
 
         config = getConfiguration();
         config.load();
-        altarblock = config.getInt("Block for altar", 22);
+        expblock = config.getInt("Altarblock giving Exp", 22);
+        bookblock = config.getInt("Altarblock giving Books", 42);
         exp = config.getInt("Exp per book", 10);
         bookworm = config.getBoolean("Bookworm", false);
         booktitle = config.getString("Book title", "Book of exp");
@@ -65,7 +67,7 @@ public class expbook extends JavaPlugin {
         } else {
             System.out.println(this + " is not using bookworm.");
         }
-        if (expbook.permission != null) {
+        if (permission != null) {
             System.out.println(this + " is using Permissions");
         } else {
             System.out.println(this + " is not using Permissions.");
@@ -78,7 +80,7 @@ public class expbook extends JavaPlugin {
             if (args.length < 3) {
                 if (args[0].equalsIgnoreCase("reload")) {
                     if (sender instanceof Player) {
-                        if (expbook.permission == null) {
+                        if (permission == null) {
                             Player plr = (Player) sender;
                             if (plr.hasPermission("expbook.command.reload")) {
                                 this.getServer().getPluginManager().disablePlugin(this);
@@ -87,9 +89,9 @@ public class expbook extends JavaPlugin {
                             } else {
                                 sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
                             }
-                        } else if (expbook.permission != null) {
+                        } else if (permission != null) {
                             Player plr = (Player) sender;
-                            if (expbook.permission.has(plr, "expbook.command.reload")) {
+                            if (permission.has(plr, "expbook.command.reload")) {
                                 this.getServer().getPluginManager().disablePlugin(this);
                                 this.getServer().getPluginManager().enablePlugin(this);
                                 plr.sendMessage(ChatColor.LIGHT_PURPLE + "expbook has been reloaded.");
@@ -108,7 +110,7 @@ public class expbook extends JavaPlugin {
                     }
                 } else if (args[0].equalsIgnoreCase("help")) {
                     if (sender instanceof Player) {
-                        if (expbook.permission == null) {
+                        if (permission == null) {
                             Player plr = (Player) sender;
                             if (plr.hasPermission("expbook.command.help")) {
                                 plr.sendMessage(ChatColor.GREEN + "-----expbook Help-----");
@@ -119,9 +121,9 @@ public class expbook extends JavaPlugin {
                             } else {
                                 sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
                             }
-                        } else if (expbook.permission != null) {
+                        } else if (permission != null) {
                             Player plr = (Player) sender;
-                            if (expbook.permission.has(plr, "expbook.command.help")) {
+                            if (permission.has(plr, "expbook.command.help")) {
                                 plr.sendMessage(ChatColor.GREEN + "-----expbook Help-----");
                                 plr.sendMessage(ChatColor.LIGHT_PURPLE + "/expbook reload");
                                 plr.sendMessage(ChatColor.AQUA + "Reloads expbook");
@@ -138,6 +140,46 @@ public class expbook extends JavaPlugin {
                         }
                     } else {
                         System.out.println("This is for player use only.");
+                    }
+                } else if (args[0].equalsIgnoreCase("set")) {
+                	if (sender instanceof Player) {
+                        if (permission == null) {
+                            Player plr = (Player) sender;
+                            if (plr.isOp()) {
+                            	int t = 0;
+                            	try {
+                            	t = Integer.parseInt (args[1]);
+                            	} catch (Exception E){
+                            	//es war keine Zahl
+                            	}
+                            	SetEXP(plr, t);
+                                plr.sendMessage(ChatColor.LIGHT_PURPLE + "Exp set.");
+                            } else {
+                                sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                            }
+                        } else if (permission != null) {
+                            Player plr = (Player) sender;
+                            if (permission.has(plr, "expbook.command.set")) {
+                            	int t = 0;
+                            	try {
+                            	t = Integer.parseInt (args[1]);
+                            	} catch (Exception E){
+                            	//es war keine Zahl
+                            	}
+                            	SetEXP(plr, t);
+                                plr.sendMessage(ChatColor.LIGHT_PURPLE + "Exp set.");
+                            } else {
+                                sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                            }
+                        } else {
+                            Player plr = (Player) sender;
+                            System.out.println("ERROR with config. Please check the permissions string.");
+                            System.out.println("Shutting down the plugin.");
+                            plr.getServer().getPluginManager().disablePlugin(this);
+                        }
+                    } else {
+                        this.getServer().getPluginManager().disablePlugin(this);
+                        this.getServer().getPluginManager().enablePlugin(this);
                     }
                 } else {
                     if (sender instanceof Player) {
@@ -158,6 +200,14 @@ public class expbook extends JavaPlugin {
         }
         return true;
     }
+    
+    public void SetEXP(Player player, int exp) {
+    	player.setExp(0);
+    	player.setLevel(0);
+    	player.setTotalExperience(0);
+    	player.giveExp(exp);
+    }
+
 }
 //M0nk3yc0d3r
 //no tricks
