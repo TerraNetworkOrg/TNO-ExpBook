@@ -3,7 +3,6 @@ package boardinggamer.expbook;
 import com.nisovin.bookworm.Book;
 import com.nisovin.bookworm.BookWorm;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -21,33 +20,78 @@ class PListener extends PlayerListener {
         this.plugin = aThis;
     }
 
+    public void GiveEXP(Player player, int exp) {
+    	int old_exp = player.getTotalExperience();
+    	player.setExp(0);
+    	player.setLevel(0);
+    	player.setTotalExperience(0);
+    	player.giveExp(old_exp + exp);
+    }
+    
+    public void TakeEXP(Player player, int exp) {
+    	int old_exp = player.getTotalExperience();
+    	player.setExp(0);
+    	player.setLevel(0);
+    	player.setTotalExperience(0);
+    	player.giveExp(old_exp - exp);
+    }
+    
+    public void SetItem(Player player, ItemStack item, int amount){
+    	player.getWorld().dropItem(player.getLocation(), item);
+		player.sendMessage(ChatColor.GREEN + "You converted a boook into exp!");
+    }
+    
     @SuppressWarnings("deprecation")
 	@Override
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+        	
             Player plr = event.getPlayer();
             Block block = event.getClickedBlock();
+            
             if (expbook.bookworm == false) {
-                if (block.getTypeId() == expbook.altarblock) {
-                    if (expbook.permission == null) {
-                        if (plr.hasPermission("expbook.use")) {
+                if (block.getTypeId() == expbook.expblock) {
+                    if (plugin.permission == null) {
+                        if (plr.isOp()) {
                             if (block.getFace(BlockFace.UP).getTypeId() == 76) {
                                 if (plr.getItemInHand().getTypeId() == 340) {
-                                    plr.sendMessage(ChatColor.LIGHT_PURPLE + "You got " + plr.getItemInHand().getAmount() * expbook.exp + " exp!");
-                                    ((ExperienceOrb) block.getWorld().spawn(plr.getLocation(), ExperienceOrb.class)).setExperience(plr.getItemInHand().getAmount() * expbook.exp);
-                                    plr.setItemInHand(new ItemStack(Material.AIR));
+                                    plr.sendMessage(ChatColor.LIGHT_PURPLE + "You got " + expbook.exp + " exp!");
+                                    //int exp = plr.getItemInHand().getAmount() * expbook.exp;
+                                    int exp = expbook.exp;
+                                    GiveEXP(plr, exp);
+                                    ItemStack handItem = plr.getItemInHand();
+                                    int handItemAmount = handItem.getAmount();
+                                    ItemStack new_handItem;
+									if (handItemAmount > 1) {
+                                    	new_handItem = new ItemStack(340, handItemAmount - 1);
+                                    }
+                                    else {
+                                    	new_handItem = new ItemStack(Material.AIR);
+                                    }
+                                    plr.setItemInHand(new_handItem);
                                 }
                             }
                         } else {
                             plr.sendMessage(ChatColor.RED + "You do not have permission to use altars.");
                         }
-                    } else if (expbook.permission != null) {
-                        if (expbook.permission.has(plr, "expbook.use")) {
+                    } else if (plugin.permission != null) {
+                        if (plugin.permission.has(plr, "expbook.use")) {
                             if (block.getFace(BlockFace.UP).getTypeId() == 76) {
                                 if (plr.getItemInHand().getTypeId() == 340) {
-                                    plr.sendMessage(ChatColor.LIGHT_PURPLE + "You got " + plr.getItemInHand().getAmount() * expbook.exp + " exp!");
-                                    ((ExperienceOrb) block.getWorld().spawn(plr.getLocation(), ExperienceOrb.class)).setExperience(plr.getItemInHand().getAmount() * expbook.exp);
-                                    plr.setItemInHand(new ItemStack(Material.AIR));
+                                    plr.sendMessage(ChatColor.LIGHT_PURPLE + "You got " + expbook.exp + " exp!");
+                                    //int exp = plr.getItemInHand().getAmount() * expbook.exp;
+                                    int exp = expbook.exp;
+                                    GiveEXP(plr, exp);
+                                    ItemStack handItem = plr.getItemInHand();
+                                    ItemStack new_handItem;
+                                    int handItemAmount = handItem.getAmount();
+                                    if (handItemAmount > 1) {
+                                    	new_handItem = new ItemStack(340, handItemAmount - 1);
+                                    }
+                                    else {
+                                    	new_handItem = new ItemStack(Material.AIR);
+                                    }
+                                    plr.setItemInHand(new_handItem);
                                 }
                             }
                         } else {
@@ -59,30 +103,33 @@ class PListener extends PlayerListener {
                         plr.getServer().getPluginManager().disablePlugin(plugin);
                     }
                     
-                    
-                    
-                } else if (block.getType() == Material.IRON_BLOCK) {
-                    if (expbook.permission == null) {
+                } else if (block.getTypeId() == expbook.bookblock) {
+                    if (plugin.permission == null) {
                         if (plr.hasPermission("expbook.use")) {
                             if (block.getFace(BlockFace.UP).getTypeId() == 76) {
-                                if (plr.getExperience() >= expbook.exp){
-                                    ((ExperienceOrb) block.getWorld().spawn(plr.getLocation(), ExperienceOrb.class)).setExperience(expbook.exp - (expbook.exp * 2));
-                                    plr.getInventory().addItem(new ItemStack(Material.BOOK, 1));
-                                    plr.sendMessage(ChatColor.LIGHT_PURPLE+"You spent "+expbook.exp+" to get a book.");
-                                }
+                            	int exp = expbook.exp;
+                            	if(plr.getTotalExperience() >= exp){
+                            		TakeEXP(plr, exp);
+                            		SetItem(plr, new ItemStack(Material.BOOK, 1), 1);
+                            	}
+                            	else {
+                            		plr.sendMessage(ChatColor.RED + "You do not have enough books to convert.");
+                            	}
                             }
                         } else {
                             plr.sendMessage(ChatColor.RED + "You do not have permission to use altars.");
                         }
-                    } else if (expbook.permission != null) {
-                        if (expbook.permission.has(plr, "expbook.use")) {
-                            if (block.getFace(BlockFace.UP).getTypeId() == 76) {
-                                if (plr.getExperience() >= expbook.exp){
-                                    ((ExperienceOrb) block.getWorld().spawn(plr.getLocation(), ExperienceOrb.class)).setExperience(expbook.exp - (expbook.exp * 2));
-                                    plr.getInventory().addItem(new ItemStack(Material.BOOK, 1));
-                                    plr.sendMessage(ChatColor.LIGHT_PURPLE+"You spent "+expbook.exp+" to get a book.");
-                                }
-                            }
+                    } else if (plugin.permission != null) {
+                        if (plugin.permission.has(plr, "expbook.use")) {
+                        	int exp = expbook.exp;
+                        	if(plr.getTotalExperience() >= exp){
+                        		TakeEXP(plr, exp);
+
+                        		SetItem(plr, new ItemStack(Material.BOOK, 1), 1);
+                        	}
+                        	else {
+                        		plr.sendMessage(ChatColor.RED + "You do not have enough books to convert.");
+                        	}
                         } else {
                             plr.sendMessage(ChatColor.RED + "You do not have permission to use altars.");
                         }
@@ -97,15 +144,16 @@ class PListener extends PlayerListener {
                 
             } else if (expbook.bookworm == true) {
                 Book book = BookWorm.getBook(plr);
-                if (block.getTypeId() == expbook.altarblock) {
-                    if (expbook.permission == null) {
+                if (block.getTypeId() == expbook.expblock) {
+                    if (plugin.permission == null) {
                         if (plr.hasPermission("expbook.use")) {
                             if (block.getFace(BlockFace.UP).getTypeId() == 76) {
                                 if (plr.getItemInHand().getTypeId() == 340) {
                                     if (book != null) {
                                         if (book.getTitle().equalsIgnoreCase(expbook.booktitle)) {
-                                            plr.sendMessage(ChatColor.LIGHT_PURPLE + "You got " + plr.getItemInHand().getAmount() * expbook.exp + " exp!");
-                                            ((ExperienceOrb) block.getWorld().spawn(plr.getLocation(), ExperienceOrb.class)).setExperience(plr.getItemInHand().getAmount() * expbook.exp);
+                                        	plr.sendMessage(ChatColor.LIGHT_PURPLE + "You got " + plr.getItemInHand().getAmount() * expbook.exp + " exp!");
+                                            int exp = plr.getItemInHand().getAmount() * expbook.exp;
+                                            GiveEXP(plr, exp);
                                             plr.setItemInHand(new ItemStack(Material.AIR));
                                         } else {
                                             plr.sendMessage(ChatColor.RED + "This is not the right book to get exp from.");
@@ -118,14 +166,15 @@ class PListener extends PlayerListener {
                         } else {
                             plr.sendMessage(ChatColor.RED + "You do not have permission to use altars.");
                         }
-                    } else if (expbook.permission != null) {
-                        if (expbook.permission.has(plr, "expbook.use")) {
+                    } else if (plugin.permission != null) {
+                        if (plugin.permission.has(plr, "expbook.use")) {
                             if (block.getFace(BlockFace.UP).getTypeId() == 76) {
                                 if (plr.getItemInHand().getTypeId() == 340) {
                                     if (book != null) {
                                         if (book.getTitle().equalsIgnoreCase(expbook.booktitle)) {
-                                            plr.sendMessage(ChatColor.LIGHT_PURPLE + "You got " + plr.getItemInHand().getAmount() * expbook.exp + " exp!");
-                                            ((ExperienceOrb) block.getWorld().spawn(plr.getLocation(), ExperienceOrb.class)).setExperience(plr.getItemInHand().getAmount() * expbook.exp);
+                                        	plr.sendMessage(ChatColor.LIGHT_PURPLE + "You got " + plr.getItemInHand().getAmount() * expbook.exp + " exp!");
+                                            int exp = plr.getItemInHand().getAmount() * expbook.exp;
+                                            GiveEXP(plr, exp);
                                             plr.setItemInHand(new ItemStack(Material.AIR));
                                         } else {
                                             plr.sendMessage(ChatColor.RED + "This is not the right book to get exp from.");
