@@ -22,25 +22,25 @@ class BListener extends BlockListener {
         Block block = event.getBlock();
         Player plr = event.getPlayer();
         if (block.getTypeId()==76){
-            if (block.getFace(BlockFace.DOWN).getTypeId()==expbook.altarblock){
-                if (expbook.permission == null){
+            if (block.getFace(BlockFace.DOWN).getTypeId()==expbook.expblock){
+                if (plugin.permission == null){
                 	if (plr.isOp()){
                 		plr.sendMessage(ChatColor.LIGHT_PURPLE+"You have created an altar!");
                 	} else {
                 		block.setType(Material.AIR);
                 		block.getFace(BlockFace.DOWN).setType(Material.AIR);
                 		block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.REDSTONE_TORCH_ON, 1));
-                		block.getWorld().dropItemNaturally(block.getLocation().add(0, -1, 0), new ItemStack(expbook.altarblock, 1));
+                		block.getWorld().dropItemNaturally(block.getLocation().add(0, -1, 0), new ItemStack(expbook.expblock, 1));
                 		plr.sendMessage(ChatColor.DARK_RED+"You can not create an altar.");
                 	}
-                	if (expbook.permission != null){
-                		if (expbook.permission.has(plr, "expbook.create")){
+                	if (plugin.permission != null){
+                		if (plugin.permission.has(plr, "expbook.create")){
                 			plr.sendMessage(ChatColor.LIGHT_PURPLE+"You have created an altar!");
                 		} else {
                 			block.setType(Material.AIR);
                 			block.getFace(BlockFace.DOWN).setType(Material.AIR);
                 			block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.REDSTONE_TORCH_ON, 1));
-                			block.getWorld().dropItemNaturally(block.getLocation().add(0, -1, 0), new ItemStack(expbook.altarblock, 1));
+                			block.getWorld().dropItemNaturally(block.getLocation().add(0, -1, 0), new ItemStack(expbook.expblock, 1));
                 			plr.sendMessage(ChatColor.DARK_RED+"You can not create an altar.");
                 		}
                 	}
@@ -58,25 +58,25 @@ class BListener extends BlockListener {
             		}
             	}
             } */
-           	else if (block.getFace(BlockFace.DOWN).getType()==Material.IRON_BLOCK){
-            	if (expbook.permission == null){
+           	else if (block.getFace(BlockFace.DOWN).getTypeId()== expbook.bookblock){
+            	if (plugin.permission == null){
             		if (plr.hasPermission("expbook.create")){
             			plr.sendMessage(ChatColor.LIGHT_PURPLE+"You have created an altar!");
             		} else {
             			block.setType(Material.AIR);
             			block.getFace(BlockFace.DOWN).setType(Material.AIR);
             			block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.REDSTONE_TORCH_ON, 1));
-            			block.getWorld().dropItemNaturally(block.getLocation().add(0, -1, 0), new ItemStack(Material.IRON_BLOCK, 1));
+            			block.getWorld().dropItemNaturally(block.getLocation().add(0, -1, 0), new ItemStack(expbook.bookblock, 1));
             			plr.sendMessage(ChatColor.DARK_RED+"You can not create an altar.");
             		}
-            	} else if (expbook.permission != null){
-            		if (expbook.permission.has(plr, "expbook.create")){
+            	} else if (plugin.permission != null){
+            		if (plugin.permission.has(plr, "expbook.create")){
             			plr.sendMessage(ChatColor.LIGHT_PURPLE+"You have created an altar!");
             		} else {
             			block.setType(Material.AIR);
             			block.getFace(BlockFace.DOWN).setType(Material.AIR);
             			block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.REDSTONE_TORCH_ON, 1));
-            			block.getWorld().dropItemNaturally(block.getLocation().add(0, -1, 0), new ItemStack(Material.IRON_BLOCK, 1));
+            			block.getWorld().dropItemNaturally(block.getLocation().add(0, -1, 0), new ItemStack(expbook.bookblock, 1));
             			plr.sendMessage(ChatColor.DARK_RED+"You can not create an altar.");
             		}
             	}
@@ -104,28 +104,28 @@ class BListener extends BlockListener {
     public void onBlockBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
         Player plr = event.getPlayer();
-        if (expbook.permission == null) {
+        if (plugin.permission == null) {
         if (!(plr.hasPermission("expbook.create"))){
            if (block.getTypeId()==76){
-               if (block.getFace(BlockFace.DOWN).getTypeId()==expbook.altarblock || block.getFace(BlockFace.DOWN).getType()==Material.IRON_BLOCK){
+               if (block.getFace(BlockFace.DOWN).getTypeId()==expbook.expblock || block.getFace(BlockFace.DOWN).getType()==Material.IRON_BLOCK){
                    event.setCancelled(true);
                    plr.sendMessage(ChatColor.DARK_RED+"You can not break an altar.");
                }
-           } else if (block.getTypeId()==expbook.altarblock || block.getType()==Material.IRON_BLOCK){
+           } else if (block.getTypeId()==expbook.expblock || block.getTypeId()==expbook.bookblock){
                if (block.getFace(BlockFace.UP).getTypeId()==76){
                    event.setCancelled(true);
                    plr.sendMessage(ChatColor.DARK_RED+"You can not break an altar.");
                }
              }
         }
-        } else if (expbook.permission != null) {
-        if (!(expbook.permission.has(plr, "expbook.create"))){
+        } else if (plugin.permission != null) {
+        if (!(plugin.permission.has(plr, "expbook.create"))){
            if (block.getTypeId()==76){
-               if (block.getFace(BlockFace.DOWN).getTypeId()==expbook.altarblock || block.getFace(BlockFace.DOWN).getType()==Material.IRON_BLOCK){
+               if (block.getFace(BlockFace.DOWN).getTypeId()==expbook.expblock || block.getFace(BlockFace.DOWN).getType()==Material.IRON_BLOCK){
                    event.setCancelled(true);
                    plr.sendMessage(ChatColor.DARK_RED+"You can not break an altar.");
                }
-           } else if (block.getTypeId()==expbook.altarblock || block.getType()==Material.IRON_BLOCK){
+           } else if (block.getTypeId()==expbook.expblock || block.getTypeId()==expbook.bookblock){
                if (block.getFace(BlockFace.UP).getTypeId()==76){
                    event.setCancelled(true);
                    plr.sendMessage(ChatColor.DARK_RED+"You can not break an altar.");
