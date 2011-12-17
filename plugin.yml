@@ -2,6 +2,7 @@ name: expbook
 main: boardinggamer.expbook.expbook
 version: 1.7.1
 description: get exp from books
+softdepend: [Vault]
 commands:
  expbook:
   description:
@@ -17,6 +18,7 @@ permissions:
     children:
       expbook.command.help: true
       expbook.command.reload: true
+      expbook.command.set: true
   expbook.create:
     description: Allows you to create and destroy altars.
     default: op
@@ -28,4 +30,7 @@ permissions:
     default: op
   expbook.command.help:
     description: Allows player to use /expbook help
+    default: op
+  expbook.command.set:
+    description: Allows player to use /expbook set
     default: op
