@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+//import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -44,11 +45,14 @@ class PListener extends PlayerListener {
     @SuppressWarnings("deprecation")
 	@Override
     public void onPlayerInteract(PlayerInteractEvent event) {
+    	
+    	Player plr = event.getPlayer();
+        Block block = event.getClickedBlock();
+        //Sign signBlock = (Sign) event.getClickedBlock().getState();
+        //String[] signLines = signBlock.getLines();
+        
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
         	
-            Player plr = event.getPlayer();
-            Block block = event.getClickedBlock();
-            
             if (expbook.bookworm == false) {
                 if (block.getTypeId() == expbook.expblock) {
                     if (plugin.permission == null) {
@@ -105,7 +109,7 @@ class PListener extends PlayerListener {
                     
                 } else if (block.getTypeId() == expbook.bookblock) {
                     if (plugin.permission == null) {
-                        if (plr.hasPermission("expbook.use")) {
+                        if (plr.isOp()) {
                             if (block.getFace(BlockFace.UP).getTypeId() == 76) {
                             	int exp = expbook.exp;
                             	if(plr.getTotalExperience() >= exp){
@@ -124,7 +128,6 @@ class PListener extends PlayerListener {
                         	int exp = expbook.exp;
                         	if(plr.getTotalExperience() >= exp){
                         		TakeEXP(plr, exp);
-
                         		SetItem(plr, new ItemStack(Material.BOOK, 1), 1);
                         	}
                         	else {
@@ -146,7 +149,7 @@ class PListener extends PlayerListener {
                 Book book = BookWorm.getBook(plr);
                 if (block.getTypeId() == expbook.expblock) {
                     if (plugin.permission == null) {
-                        if (plr.hasPermission("expbook.use")) {
+                        if (plr.isOp()) {
                             if (block.getFace(BlockFace.UP).getTypeId() == 76) {
                                 if (plr.getItemInHand().getTypeId() == 340) {
                                     if (book != null) {
