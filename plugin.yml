@@ -1,6 +1,8 @@
 name: expbook
 main: boardinggamer.expbook.expbook
-version: 1.7.1
+version: 2.0.0
+author: TerraNetworkOrg(orig.boardingamer)
+dev-url: http://dev.bukkit.org/server-mods/tno-expbook/
 description: get exp from books
 softdepend: [Vault]
 commands:
