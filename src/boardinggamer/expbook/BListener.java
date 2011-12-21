@@ -33,19 +33,18 @@ class BListener extends BlockListener {
                 		block.getWorld().dropItemNaturally(block.getLocation().add(0, -1, 0), new ItemStack(expbook.expblock, 1));
                 		plr.sendMessage(ChatColor.DARK_RED+"You can not create an altar.");
                 	}
-                	if (plugin.permission != null){
-                		if (plugin.permission.has(plr, "expbook.create")){
-                			plr.sendMessage(ChatColor.LIGHT_PURPLE+"You have created an altar!");
-                		} else {
-                			block.setType(Material.AIR);
-                			block.getFace(BlockFace.DOWN).setType(Material.AIR);
-                			block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.REDSTONE_TORCH_ON, 1));
-                			block.getWorld().dropItemNaturally(block.getLocation().add(0, -1, 0), new ItemStack(expbook.expblock, 1));
-                			plr.sendMessage(ChatColor.DARK_RED+"You can not create an altar.");
-                		}
+                }else if (plugin.permission != null){
+                	if (plugin.permission.has(plr, "expbook.create")){
+                		plr.sendMessage(ChatColor.LIGHT_PURPLE+"You have created an altar!");
+                	} else {
+                		block.setType(Material.AIR);
+                		block.getFace(BlockFace.DOWN).setType(Material.AIR);
+                		block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.REDSTONE_TORCH_ON, 1));
+                		block.getWorld().dropItemNaturally(block.getLocation().add(0, -1, 0), new ItemStack(expbook.expblock, 1));
+                	plr.sendMessage(ChatColor.DARK_RED+"You can not create an altar.");
                 	}
-            	}
-            } /*else if (block.getTypeId()==expbook.altarblock){
+                }
+            /*else if (block.getTypeId()==expbook.altarblock){
             	if (block.getFace(BlockFace.UP).getTypeId()==76){
             		if (plr.isOp()){
             			plr.sendMessage(ChatColor.LIGHT_PURPLE+"You have created an alter!");
@@ -58,7 +57,7 @@ class BListener extends BlockListener {
             		}
             	}
             } */
-           	else if (block.getFace(BlockFace.DOWN).getTypeId()== expbook.bookblock){
+           	}else if (block.getFace(BlockFace.DOWN).getTypeId()== expbook.bookblock){
             	if (plugin.permission == null){
             		if (plr.hasPermission("expbook.create")){
             			plr.sendMessage(ChatColor.LIGHT_PURPLE+"You have created an altar!");
