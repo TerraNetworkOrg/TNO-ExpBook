@@ -207,7 +207,6 @@ public class expbook extends JavaPlugin {
     	player.setTotalExperience(0);
     	player.giveExp(exp);
     }
-
 }
 //M0nk3yc0d3r
 //no tricks
