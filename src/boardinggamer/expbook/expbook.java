@@ -1,5 +1,8 @@
 package boardinggamer.expbook;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.ChatColor;
@@ -23,6 +26,9 @@ public class expbook extends JavaPlugin {
     public static String booktitle;
     Configuration config;
     public Permission permission = null;
+    
+    public final Map<String, Integer> expBuffer = new HashMap<String, Integer>();
+    public boolean lossByTotal = true;
 
     private Boolean setupPermissions()
     {
@@ -40,7 +46,8 @@ public class expbook extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        System.out.println(this + " has been enabled");
+    	System.out.println(this + "===========================================================");
+    	System.out.println(this + " v2.0.1 has been enabled");
         PluginManager pm = this.getServer().getPluginManager();
         pm.registerEvent(Type.PLAYER_INTERACT, new PListener(this), Priority.Normal, this);
         pm.registerEvent(Type.BLOCK_PLACE, new BListener(this), Priority.Lowest, this);
@@ -72,6 +79,7 @@ public class expbook extends JavaPlugin {
         } else {
             System.out.println(this + " is not using Permissions.");
         }
+        System.out.println(this + "===========================================================");
     }
 
     @Override
