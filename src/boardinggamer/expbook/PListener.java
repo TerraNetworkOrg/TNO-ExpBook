@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 //import org.bukkit.block.Sign;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -34,7 +35,7 @@ class PListener extends PlayerListener {
     	player.setExp(0);
     	player.setLevel(0);
     	player.setTotalExperience(0);
-    	player.giveExp(old_exp - exp);
+    	//player.giveExp(old_exp - exp);
     }
     
     public void SetItem(Player player, ItemStack item, int amount){
@@ -53,6 +54,8 @@ class PListener extends PlayerListener {
         
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
         	
+        	expEditor e = new expEditor(plr);	
+        	
             if (expbook.bookworm == false) {
                 if (block.getTypeId() == expbook.expblock) {
                     if (plugin.permission == null) {
@@ -62,7 +65,14 @@ class PListener extends PlayerListener {
                                     plr.sendMessage(ChatColor.LIGHT_PURPLE + "You got " + expbook.exp + " exp!");
                                     //int exp = plr.getItemInHand().getAmount() * expbook.exp;
                                     int exp = expbook.exp;
-                                    GiveEXP(plr, exp);
+                                    //GiveEXP(plr, exp);
+                                    if(e.getTotalExp() > exp) {
+                                        //event.setNewExp(e.getTotalExp()-loss.intValue());
+                                        plugin.expBuffer.put(plr.getName(), e.getTotalExp()+exp);
+                                    } else {
+                                    	plugin.expBuffer.put(plr.getName(), 0);
+                                    }
+                                    new expEditor(plr).giveExp(exp);
                                     ItemStack handItem = plr.getItemInHand();
                                     int handItemAmount = handItem.getAmount();
                                     ItemStack new_handItem;
@@ -85,7 +95,14 @@ class PListener extends PlayerListener {
                                     plr.sendMessage(ChatColor.LIGHT_PURPLE + "You got " + expbook.exp + " exp!");
                                     //int exp = plr.getItemInHand().getAmount() * expbook.exp;
                                     int exp = expbook.exp;
-                                    GiveEXP(plr, exp);
+                                    //GiveEXP(plr, exp);
+                                    if(e.getTotalExp() > exp) {
+                                        //event.setNewExp(e.getTotalExp()-loss.intValue());
+                                        plugin.expBuffer.put(plr.getName(), e.getTotalExp()+exp);
+                                    } else {
+                                    	plugin.expBuffer.put(plr.getName(), 0);
+                                    }
+                                    new expEditor(plr).giveExp(exp);
                                     ItemStack handItem = plr.getItemInHand();
                                     ItemStack new_handItem;
                                     int handItemAmount = handItem.getAmount();
@@ -113,8 +130,13 @@ class PListener extends PlayerListener {
                             if (block.getFace(BlockFace.UP).getTypeId() == 76) {
                             	int exp = expbook.exp;
                             	if(plr.getTotalExperience() >= exp){
-                            		TakeEXP(plr, exp);
-                            		SetItem(plr, new ItemStack(Material.BOOK, 1), 1);
+                            		//TakeEXP(plr, exp);
+                            		plugin.expBuffer.put(plr.getName(), e.getTotalExp()-exp);
+                            		Integer newExp = plugin.expBuffer.get(event.getPlayer().getName());
+                            		plugin.expBuffer.remove(event.getPlayer().getName());
+                            		TakeEXP(plr, 0);
+                            		new expEditor(plr).giveExp(newExp);
+                                    SetItem(plr, new ItemStack(Material.BOOK, 1), 1);
                             	}
                             	else {
                             		plr.sendMessage(ChatColor.RED + "You do not have enough books to convert.");
@@ -127,7 +149,12 @@ class PListener extends PlayerListener {
                         if (plugin.permission.has(plr, "expbook.use")) {
                         	int exp = expbook.exp;
                         	if(plr.getTotalExperience() >= exp){
-                        		TakeEXP(plr, exp);
+                        		//TakeEXP(plr, exp);
+                        		plugin.expBuffer.put(plr.getName(), e.getTotalExp()-exp);
+                        		Integer newExp = plugin.expBuffer.get(event.getPlayer().getName());
+                        		plugin.expBuffer.remove(event.getPlayer().getName());
+                        		TakeEXP(plr, 0);
+                        		new expEditor(plr).giveExp(newExp);
                         		SetItem(plr, new ItemStack(Material.BOOK, 1), 1);
                         	}
                         	else {
